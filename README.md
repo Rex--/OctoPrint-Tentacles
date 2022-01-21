@@ -1,17 +1,30 @@
 # OctoPrint-Tentacles
 
-**TODO:** Describe what your plugin does.
+Control OctoPrint with hardware devices. Each "tentacle" is linked to an action to perform.
 
 ## Setup
 
-Install via the bundled [Plugin Manager](https://docs.octoprint.org/en/master/bundledplugins/pluginmanager.html)
-or manually using this URL:
+Install via the bundled [Plugin Manager](https://docs.octoprint.org/en/master/bundledplugins/pluginmanager.html) manually using this URL:
 
     https://github.com/Rex--/OctoPrint-Tentacles/archive/master.zip
 
-**TODO:** Describe how to install your plugin, if more needs to be done than just installing it via pip or through
-the plugin manager.
 
 ## Configuration
 
-**TODO:** Describe your plugin's configuration options (if any).
+Configure tentacles in config.yaml:
+```yaml
+tentacles:
+    serial:
+        port: /dev/ttyAMA1
+    tentacles:
+    - key: 1
+        name: Bed Raise (Z-)
+        action: jog
+        args:
+            axis:
+                z: -1
+            speed: 5000
+    - key: 5
+        name: Home (Enter)
+        action: home
+```
