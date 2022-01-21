@@ -22,10 +22,11 @@ class Tentacles(octoprint.plugin.StartupPlugin,
         # and map actions to keycodes
         self._logger.info('Loading tentacles...')
         tentacles_settings = self._settings.get(['tentacles'])
+        action_init_args = dict(printer=self._printer)      # This should be dynamic
         for key in tentacles_settings:
             self._logger.debug(f"Loading tentacle: {key}")
             if ({'key', 'action'} <= key.keys() ) and (key['action'] in actions.ACTIONS):
-                self._tentacles[key['key']] = actions.ACTIONS[key['action']](self._printer)
+                self._tentacles[key['key']] = actions.ACTIONS[key['action']](**action_init_args)
                 if 'args' in key:
                     action_args = key['args']
                 else:
@@ -65,7 +66,7 @@ class Tentacles(octoprint.plugin.StartupPlugin,
                 self._logger.info(f'Keycode {keycode} is not attached to an action!')
                 return
             tentacle_action.run()
-            
+
 
     def get_template_vars(self):
         return dict(tentacles=self._settings.get(['tentacles']))

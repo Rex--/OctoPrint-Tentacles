@@ -22,19 +22,24 @@ def tentacle_action(name):
     return decorator_tentacle_action
 
 # Extend BaseAction to define a new action
-#   * Should not be passing printer to the base action
 class BaseAction(object):
-    def __init__(self, printer):
-        self._printer = printer
+    def __init__(self, *args, **kwargs):
+        pass
     
     def configure(self, *args, **kwargs):
         pass
 
     def run(self):
         pass
+
+# Printer actions get the _printer object injected
+class PrinterAction(BaseAction):
+    def __init__(self, printer=None, *args, **kwargs):
+        self._printer = printer
  
 @tentacle_action('home')
-class HomeAction(BaseAction):
+class HomeAction(PrinterAction):
+
     def configure(self, axis=['x', 'y', 'z']):
         self._axis = axis
 
@@ -42,7 +47,7 @@ class HomeAction(BaseAction):
         self._printer.home(self._axis)
 
 @tentacle_action('jog')
-class JogAction(BaseAction):
+class JogAction(PrinterAction):
 
     def configure(self, axis=None, distance=0, speed=4500, relative=True):
         self._axis = axis
