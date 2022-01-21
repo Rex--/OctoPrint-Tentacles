@@ -1,0 +1,21 @@
+<h3>{{ _("Configured Tentacles") }}</h3>
+<table class="table table-condensed table-hover">
+    <thead>
+        <tr>
+            <th>Key</th>
+            <th>Name</th>
+            <th>Action</th>
+            <th>Args</th>
+        </tr>
+    </thead>
+    <tbody>
+{% for tentacle in plugin_tentacle_tentacles %}
+    <tr>
+        <td>{{ tentacle.key }}</td>
+        <td>{{ tentacle.name }}</td>
+        <td>{{ tentacle.action }}</td>
+        <td>{{ tentacle.args }}</td>
+    </tr>
+{% endfor %}
+    </tbody>
+</table>
