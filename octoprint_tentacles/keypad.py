@@ -18,15 +18,19 @@ class KeypadListener(threading.Thread):
         except:
             self._logger.error(f"Couldn't open serial port: {self._port}")
             return
-            
-        key_buf = []
+
         with serial_con as ser:
+            key_buf = []
             while True:
+                # Read a single byte
                 key = ser.read()
-                #print(key)
+                
+                # Our keypad sends a byte value corresponding to a keycode
+                #   followed by a delimeter ( 0xFF )
                 if (key == b'\xff'):
-                    # Assume we have a keypress stored in key_buf
-                    keycode = key_buf.pop(0)
+
+                    # Assume the last byte stored in key_buf is a keycode
+                    keycode = key_buf.pop()
 
                     # if the keycode is less than 128, its a key press
                     if (keycode < b'\b10000000'):
@@ -37,6 +41,9 @@ class KeypadListener(threading.Thread):
                     elif (keycode > b'\b10000000'):
                         self._event_bus.fire('plugin_tentacle_key_release',
                                 payload = { 'keycode': keycode })
+
+                    # Clear the list of any remaining trash data
+                    key_buf.clear()
 
                 else:
                     # Log the data
