@@ -13,6 +13,9 @@ Install via the bundled [Plugin Manager](https://docs.octoprint.org/en/master/bu
 
 Configure tentacles in config.yaml:
 ```yaml
+  tentacles:
+    serial:
+      port: /dev/ttyUSB0
     tentacles:
       1:
         control:
@@ -30,6 +33,7 @@ Configure tentacles in config.yaml:
           action: home
           args:
             axis:
-                - x
-                - y
+            - x
+            - y
+          name: Home (X/Y)
 ```
