@@ -13,18 +13,23 @@ Install via the bundled [Plugin Manager](https://docs.octoprint.org/en/master/bu
 
 Configure tentacles in config.yaml:
 ```yaml
-tentacles:
-    serial:
-        port: /dev/ttyAMA1
     tentacles:
-    - key: 1
-        name: Bed Raise (Z-)
-        action: jog
-        args:
+      1:
+        control:
+          action: jog
+          args:
             axis:
-                z: -1
-            speed: 5000
-    - key: 5
-        name: Home (Enter)
-        action: home
+              z: -1
+            speed: 7500
+          name: Bed Raise (Z-)
+      5:
+        control:
+          action: home
+          name: Home
+        printing:
+          action: home
+          args:
+            axis:
+                - x
+                - y
 ```

@@ -3,19 +3,21 @@
     <thead>
         <tr>
             <th>Key</th>
-            <th>Name</th>
+            <th>Mode</th>
             <th>Action</th>
-            <th>Args</th>
+            <th>Name</th>
         </tr>
     </thead>
     <tbody>
-{% for tentacle in plugin_tentacles_tentacles %}
-    <tr>
-        <td>{{ tentacle.key }}</td>
-        <td>{{ tentacle.name }}</td>
-        <td>{{ tentacle.action }}</td>
-        <td>{{ tentacle.args }}</td>
-    </tr>
+{% for tentacle_code, tentacle_conf in plugin_tentacles_tentacles.items() %}
+    {% for mode, action in tentacle_conf.items() %}
+        <tr>
+            <td>{{ tentacle_code }}</td>
+            <td>{{ mode }}</td>
+            <td>{{ action.action }}</td>
+            <td>{{ action.name }}</td>
+        </tr>
+    {% endfor %}
 {% endfor %}
     </tbody>
 </table>

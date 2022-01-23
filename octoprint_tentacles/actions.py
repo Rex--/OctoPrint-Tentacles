@@ -18,6 +18,7 @@ def get_action(name):
 def tentacle_action(name):
     def decorator_tentacle_action(action_func):
         ACTIONS[name] = action_func
+        action_func.name = name
         return action_func
     return decorator_tentacle_action
 
