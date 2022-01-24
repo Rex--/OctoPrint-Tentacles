@@ -33,6 +33,30 @@ class BaseAction(object):
     def run(self):
         pass
 
+# Menu actions get the tentacles object injected
+class MenuAction(BaseAction):
+    def __init__(self, tentacles=None, *args, **kwargs):
+        self._tentacles = tentacles
+
+@tentacle_action('menu_start')
+class StartMenuAction(MenuAction):
+    def run(self):
+        self._tentacles._mode = self._tentacles._menu.start_menu(self._tentacles._mode)
+
+@tentacle_action('menu_change')
+class ChangeMenuAction(MenuAction):
+    def configure(self, opt=None, *args, **kwargs):
+        self._opt = opt
+
+    def run(self):
+        self._tentacles._menu.change_menu(self._opt)
+
+@tentacle_action('menu_set')
+class SetMenuAction(MenuAction):
+    def run(self):
+        self._tentacles._mode = self._tentacles._menu.set_menu()
+
+
 # Printer actions get the _printer object injected
 class PrinterAction(BaseAction):
     def __init__(self, printer=None, *args, **kwargs):
