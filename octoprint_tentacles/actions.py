@@ -82,3 +82,17 @@ class JogAction(PrinterAction):
 
     def run(self):
         self._printer.jog(self._axis, speed=self._speed, relative=self._relative)
+
+
+# Plotter actions extend printer base
+
+@tentacle_action('plot_home')
+class HomePlotterAction(PrinterAction):
+
+    def configure(self, home_axis=['x', 'y'], z=150, **kwargs):
+        self._z = z
+        self._home_axis = home_axis
+
+    def run(self):
+        self._printer.home(self._home_axis)
+        self._printer.jog({'z':self._z}, relative=False, speed=4500)

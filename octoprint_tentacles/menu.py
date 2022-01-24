@@ -11,7 +11,7 @@ class Mode(int, enum.Enum):
     PRINTING = -1
     MENU = 0        # Any mode greater than 0 will be shown in menu
     CONTROL = 1
-    #PLOTTER = 2
+    PLOTTER = 2
     #MAINTENANCE = 3
 
     @classmethod
