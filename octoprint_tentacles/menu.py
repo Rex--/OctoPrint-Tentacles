@@ -28,6 +28,7 @@ class Menu:
         self._selected = None
     
     def start_menu(self, mode):
+        self._entry = mode
         self._selected = mode
         self._display_menu()
         return Mode.MENU
@@ -43,17 +44,23 @@ class Menu:
             self._display_menu()
     
     def set_menu(self):
-        self._printer.commands(f"M117 > {self._selected.name.title()} <")
+        self._printer.commands(f"M117  *{self._selected.name.title()}")
         return self._selected
 
     def _display_menu(self):
-        if self._start < self._selected < self._end:
-            self._printer.commands(f"M117 < {self._selected.name.title()} >")
-        elif self._start == self._selected < self._end:
-            self._printer.commands(f"M117 [ {self._selected.name.title()} >")
-        elif self._start < self._selected == self._end:
-            self._printer.commands(f"M117 < {self._selected.name.title()} ]")
-        elif self._start == self._selected == self._end:
-            self._printer.commands(f"M117 [ {self._selected.name.title()} ]")
+        if self._selected == self._entry:
+            prefix = '*'
         else:
-            self._printer.commands(f"M117 MENU ERROR: {self._selected.name.title()}")
+            prefix = ' '
+        suffix = ' ' * (18 - len(self._selected.name))
+        name = prefix + self._selected.name.title() + suffix
+        if self._start < self._selected < self._end:
+            self._printer.commands(f"M117 <{name}>")
+        elif self._start == self._selected < self._end:
+            self._printer.commands(f"M117 [{name}>")
+        elif self._start < self._selected == self._end:
+            self._printer.commands(f"M117 <{name}]")
+        elif self._start == self._selected == self._end:
+            self._printer.commands(f"M117 [{name}]")
+        else:
+            self._printer.commands(f"M117 MENU ERROR: {name}")
