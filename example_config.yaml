@@ -1,0 +1,68 @@
+plugins:
+  tentacles:
+    serial:
+      port: /dev/ttyAMA1
+    tentacles:
+      1:
+        control:
+          action: jog
+          args:
+            axis:
+              z: -1
+          name: Z-
+      2:
+        control:
+          action: jog
+          args:
+            axis:
+              y: -10
+            speed: 5000
+          name: Y-
+      3:
+        menu:
+          action: menu_start
+      4:
+        control:
+          action: jog
+          args:
+            axis:
+              x: 10
+            speed: 5000
+          name: X+
+        menu:
+          action: menu_change
+          args:
+            opt: prev
+      5:
+        control:
+          action: home
+          name: Home
+        menu:
+          action: menu_set
+      6:
+        control:
+          action: jog
+          args:
+            axis:
+              x: -10
+            speed: 5000
+          name: X-
+        menu:
+          action: menu_change
+          args:
+            opt: next
+      7:
+        control:
+          action: jog
+          args:
+            axis:
+              z: 1
+          name: Z+
+      8:
+        control:
+          action: jog
+          args:
+            axis:
+              y: 10
+            speed: 5000
+          name: Y+
