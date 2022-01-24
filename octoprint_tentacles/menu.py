@@ -44,16 +44,12 @@ class Menu:
             self._display_menu()
     
     def set_menu(self):
-        self._printer.commands(f"M117  ~{self._selected.name.title()}")
+        name = self._format_name(select_char=None)
+        self._printer.commands(f"M117 >{name}<")
         return self._selected
 
     def _display_menu(self):
-        if self._selected == self._entry:
-            prefix = '~'
-        else:
-            prefix = ' '
-        suffix = ' ' * (18 - len(self._selected.name))
-        name = prefix + self._selected.name.title() + suffix
+        name = self._format_name()
         if self._start < self._selected < self._end:
             self._printer.commands(f"M117 <{name}>")
         elif self._start == self._selected < self._end:
@@ -64,3 +60,12 @@ class Menu:
             self._printer.commands(f"M117 [{name}]")
         else:
             self._printer.commands(f"M117 MENU ERROR: {self._selected}")
+    
+    def _format_name(self, length=18, pad_char=' ', select_char='~'):
+        if select_char and (self._selected == self._entry):
+            padding = select_char
+            length -= 1
+        else:
+            padding = ''
+        padding += (pad_char * (length - len(self._selected.name)))
+        return pad_char + self._selected.name.title() + padding
