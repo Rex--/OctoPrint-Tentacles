@@ -99,9 +99,23 @@ class Tentacles(octoprint.plugin.StartupPlugin,
                 self._logger.debug(f'Keycode {keycode} is not attached to an action!')
                 return
             if isinstance(tentacle_action, actions.BaseAction):
-                tentacle_action.run()
+                tentacle_action._run()
             else:
                 self._logger.err(f"Unknown action: {tentacle_action}")
+        
+        if event == 'plugin_tentacle_key_release':
+            keycode = payload['keycode'][0] - 128
+            try:
+                tentacle_action = self._tentacles[keycode][self._mode]['action']
+            except KeyError:
+                self._logger.debug(f'Keycode {keycode} is not attached to an action!')
+                return
+            if isinstance(tentacle_action, actions.BaseAction):
+                if tentacle_action._running:
+                    tentacle_action.stop()
+            else:
+                self._logger.err(f"Unknown action: {tentacle_action}")
+
 
         # Change modes on printer state change
         if event == 'PrinterStateChanged':

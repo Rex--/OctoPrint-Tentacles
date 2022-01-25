@@ -1,3 +1,6 @@
+import octoprint.printer
+
+
 # Dictionary of actions that have been defined
 # Key will be the action name, value will be a class object
 ACTIONS = {}
@@ -33,7 +36,12 @@ class BaseAction(object):
     def run(self):
         pass
 
-# Menu actions get the tentacles object injected
+    def _run(self):
+        self._running = True
+        self.run()
+        self._running = False
+
+# Menu actions get the Tentacles class instance injected
 class MenuAction(BaseAction):
     def __init__(self, tentacles=None, *args, **kwargs):
         self._tentacles = tentacles
@@ -61,7 +69,7 @@ class SetMenuAction(MenuAction):
 class PrinterAction(BaseAction):
     def __init__(self, printer=None, *args, **kwargs):
         self._printer = printer
- 
+
 @tentacle_action('home')
 class HomeAction(PrinterAction):
 
@@ -74,15 +82,47 @@ class HomeAction(PrinterAction):
 @tentacle_action('jog')
 class JogAction(PrinterAction):
 
-    def configure(self, axis=None, distance=0, speed=4500, relative=True):
+    def configure(self, axis=None, speed=4500, relative=True):
         self._axis = axis
-        self._distance = distance
         self._speed = speed
         self._relative = relative
 
     def run(self):
         self._printer.jog(self._axis, speed=self._speed, relative=self._relative)
 
+@tentacle_action('jog-repeat')
+class JogRepeatAction(octoprint.printer.PrinterCallback, JogAction):
+    def configure(self, axis={}, speed=4500, relative=True):
+        self._axis = axis
+        self._speed = speed
+        self._relative = relative
+        self._jog = f"G0 { ' '.join([f'{x.upper()}{d}' for x, d in self._axis.items() ])} F{self._speed}"
+        self._max_repeat = 5
+        self._running = False
+
+    def _run(self):
+        print('Registering PrinterCallback')
+        self._printer.register_callback(self)
+        self._running = True
+        if self._relative:
+            self._printer.commands('G91')
+        self._prev_log = self._jog
+        self._printer.commands(self._jog)
+
+    def stop(self):
+        self._running = False
+        self._printer.unregister_callback(self)
+    
+    def on_printer_add_log(self, log):
+        if log.startswith('Recv: '):
+            log = log[6:]
+        if log == 'ok' and self._prev_log == self._jog:
+            self._printer.commands('M400')
+        elif log == 'ok' and self._prev_log == 'M400':
+            if self._running:
+                self._printer.commands(self._jog)
+        elif log.startswith('Send: '):
+            self._prev_log = log[6:]
 
 # Plotter actions extend printer base
 

@@ -40,6 +40,7 @@ plugins:
 Current implemented actions:
 
 - jog
+- jog-repeat
 - home
 - plot_home
 
